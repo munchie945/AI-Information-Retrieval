@@ -12,6 +12,8 @@ class DocumentRanker(object):
     def __init__(self, scoringFunction, documents):
         self.scoringFunction = scoringFunction
         self.documents = documents
+        self.docLengths = [len(document) for document in documents]
+        self.avgDocLength = sum(self.docLengths) / float(len(self.docLengths))
         
     def rank_documents(self, query):
         '''
@@ -26,19 +28,25 @@ class DocumentRanker(object):
         '''
         scores = []
         for i in range(len(self.documents)):
-            currScore = self.scoringFunction(query, self.documents[i])
+            currScore = self.scoringFunction(query, self.documents[i], self.documents)
             indexScoreTuple = (i, currScore)
             scores.append(indexScoreTuple)
         
         # sorts the tuples in descending order based on their scores
         scores.sort(key = lambda x: x[1], reverse = True)
         return scores
+    
 
-def length_scoring_function(query, document):
+def length_scoring_function(query, document, documents):
     '''
     Example of a scoring function: returns a numeric score based on the document passed in (in the form of list of strings)
     '''
-    return len(document)
+    docLength = len(document)
+    
+def bm25_scoring_function(query, document, documents):
+    docLength = len(document)
+    
+    
             
         
     
