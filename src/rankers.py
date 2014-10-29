@@ -13,7 +13,7 @@ class DocumentRanker(object):
         self.scoringFunction = scoringFunction
         self.documents = documents
         
-    def rankDocuments(self, query):
+    def rank_documents(self, query):
         '''
         Takes in:
         query: items to match in the documents, as a list of strings (punctuation stripped etc.)
@@ -34,7 +34,7 @@ class DocumentRanker(object):
         scores.sort(key = lambda x: x[1], reverse = True)
         return scores
 
-def nWordsScoringFunction(query, document):
+def length_scoring_function(query, document):
     '''
     Example of a scoring function: returns a numeric score based on the document passed in (in the form of list of strings)
     '''
