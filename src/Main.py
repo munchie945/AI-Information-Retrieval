@@ -37,7 +37,7 @@ if __name__ == '__main__':
     corpusFileNames = os.listdir('../corpus')
     corpus = get_files(corpusFileNames)
     
-    scoringFunctions = [rankers.bm25_scoring_function]
+    scoringFunctions = [rankers.skipbigram_scoring_function]
     
     corpusRankers = [rankers.DocumentRanker(scoringFunction, corpus) for scoringFunction in scoringFunctions]
     
