@@ -48,8 +48,6 @@ class DocumentRanker(object):
             
             idf.append(math.log((n - nq + 0.5)/(nq + 0.5)))
             
-        
-        
         scores = []
         for i in range(len(self.documents)):
             currScore = self.scoringFunction(query, self.documents[i], self.avgDocLength, idf, [termFreq[i] for termFreq in termFreqs])

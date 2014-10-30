@@ -6,7 +6,10 @@ Created on Oct 28, 2014
 
 import os
 import string
+
+import alignment
 import rankers
+
 
 def get_files(fileNames):
     corpus = []
