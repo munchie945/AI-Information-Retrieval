@@ -9,56 +9,44 @@ import os
 import Main
 import alignment
 
-global allIdfs
-allIdfs = {}
-
-def textual_alignment_scoring_function(query, document, avgDocLength, documents, idfs, termFreqs, skipgrams):
-    if len(dict) == 0:
-        populateIdfs(documents)
-    score = []
-    p = document
-    q = query
-    iMax = len(document)
-    jMax = len(query)
-    scores = ([0] * jMax) * iMax
+def textual_alignment_scoring_function(query, document, avgDocLength, documents, idfs, termFreqs, skipgrams, allidfs):
+    p = [0] + document
+    q = [0] + query
+    iMax = len(p)
+    jMax = len(q)
+    scores = []
+    nDocs = len(documents)
+    for a in range(iMax):
+        row = []
+        for b in range(jMax):
+            row.append(0)
+        scores.append(row)
     maxScore = -1
     for i in range(1, iMax):
         for j in range(1, jMax):
-            possScore1 = score[i-1][j-1] + sim(p[i], q[j])
-            possScore2 = score[i-1][j] + sim(p[i], None)
-            possScore3 = score[i][j-1] + sim(None, q[j])
-            scores[i][j] = max(possScore1, possScore2, possScore3, 0)
+            possScore1 = scores[i-1][j-1] + sim(p[i], q[j], allidfs, nDocs)
+            possScore2 = scores[i-1][j] + sim(p[i], None, allidfs, nDocs)
+            possScore3 = scores[i][j-1] + sim(None, q[j], allidfs, nDocs)
+            bestScore =  max(possScore1, possScore2, possScore3, 0)
+            scores[i][j] = bestScore
             if (scores[i][j] > maxScore):
-                maxScore = scores[i][j]
+                maxScore = bestScore
+    return maxScore
     
-def populateIdfs(documents):
-    nDocs = len(documents)
-    allWordFreqs = {}
-    result = {}
-    for document in documents:
-        uniqueWords = []
-        for word in document:
-            if word not in allWordFreqs:
-                '''if the word has never appeared in the corpus before'''
-                allWordFreqs[word] = 1
-                uniqueWords.append(word)
-            elif word not in uniqueWords:
-                '''word has been in corpus, but not in curr document before'''
-                allWordFreqs[word] += 1
-                uniqueWords.append(word)
-    for key in allWordFreqs:
-        wordFreq = allWordFreqs[key]
-        result[key] = math.log((nDocs - wordFreq + 0.5)/(wordFreq + 0.5))
+def sim(term1, term2, allIdfs, nDocs):
+    idf1 = math.log(nDocs)
+    idf2 = math.log(nDocs)
+    if term1 in allIdfs:
+        idf1 = allIdfs[term1]
+    if term2 in allIdfs:
+        idf2 = allIdfs[term2]
     
-    allIdfs = result
-    
-def sim(term1, term2):
     if (term1 == term2):
-        return allIdfs[term1]
+        return idf1
     elif (term1 == None):
-        return -allIdfs[term2]
+        return 0 - idf2
     elif (term2 == None):
-        return -allIdfs[term1]
+        return 0 - idf1
     else:
-        return -allIdfs[term1]
+        return 0 - idf2
     
